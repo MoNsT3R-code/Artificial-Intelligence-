@@ -1,0 +1,176 @@
+import random
+import math
+
+conflict_pairs = {
+    (0,1),
+    (1,2),
+    (2,3),
+    (3,4),
+    (4,5),
+    (0,5),
+    (1,4)
+}
+
+num_courses = 6
+num_slots = 3
+
+def count_conflicts(state, conflict_pairs):
+    conflicts = 0
+    for (c1, c2) in conflict_pairs:
+        if state[c1] == state[c2]:
+            conflicts += 1
+    return conflicts
+
+def all_neighbors(state, num_slots=3):
+    neighbors = []
+    for i in range(len(state)):
+        for slot in range(num_slots):
+            if slot != state[i]:
+                new_state = state.copy()
+                new_state[i] = slot
+                neighbors.append(new_state)
+    return neighbors
+
+def best_neighbor(state, conflict_pairs):
+
+    neighbors = all_neighbors(state)
+    best = None
+    best_score = float('inf')
+
+    for n in neighbors:
+        score = count_conflicts(n, conflict_pairs)
+
+        if score < best_score:
+            best = n
+            best_score = score
+
+    return best
+
+def hill_climbing(initial_state, conflict_pairs, max_steps=100):
+
+    current = initial_state
+    current_score = count_conflicts(current, conflict_pairs)
+
+    for step in range(max_steps):
+
+        neighbor = best_neighbor(current, conflict_pairs)
+        neighbor_score = count_conflicts(neighbor, conflict_pairs)
+
+        if neighbor_score < current_score:
+            current = neighbor
+            current_score = neighbor_score
+        else:
+            break
+
+    return current, current_score
+
+def random_neighbor(state, num_slots=3):
+    new_state = state.copy()
+    course = random.randint(0, len(state)-1)
+    new_slot = random.randint(0, num_slots-1)
+
+    while new_slot == state[course]:
+        new_slot = random.randint(0, num_slots-1)
+
+    new_state[course] = new_slot
+    return new_state
+
+def simulated_annealing(initial_state, conflict_pairs,
+                        T0=10, alpha=0.99, Tmin=0.001, max_steps=10000):
+
+    current = initial_state
+    current_score = count_conflicts(current, conflict_pairs)
+    T = T0
+
+    steps = 0
+
+    for step in range(max_steps):
+
+        steps += 1
+
+        if current_score == 0 or T < Tmin:
+            break
+
+        neighbor = random_neighbor(current)
+        neighbor_score = count_conflicts(neighbor, conflict_pairs)
+
+        delta = neighbor_score - current_score
+
+        if delta <= 0:
+            current = neighbor
+            current_score = neighbor_score
+        else:
+            probability = math.exp(-delta / T)
+            if random.random() < probability:
+                current = neighbor
+                current_score = neighbor_score
+
+        T *= alpha
+
+    return current, current_score, steps
+
+
+runs = 20
+success = 0
+total_conflicts = 0
+
+for i in range(runs):
+
+    initial_state = [random.randint(0, num_slots-1) for _ in range(num_courses)]
+
+    final_state, final_score = hill_climbing(initial_state, conflict_pairs)
+
+    total_conflicts += final_score
+
+    if final_score == 0:
+        success += 1
+
+print("Hill Climbing Results")
+print("Success rate:", success, "/", runs)
+print("Average final conflicts:", total_conflicts / runs)
+
+
+success = 0
+total_conflicts = 0
+total_steps = 0
+
+for i in range(runs):
+
+    initial_state = [random.randint(0, num_slots-1) for _ in range(num_courses)]
+
+    final_state, final_score, steps = simulated_annealing(
+        initial_state, conflict_pairs, alpha=0.95)
+
+    total_conflicts += final_score
+    total_steps += steps
+
+    if final_score == 0:
+        success += 1
+
+print("\nSimulated Annealing (Fast Cooling)")
+print("Success rate:", success, "/", runs)
+print("Average final conflicts:", total_conflicts / runs)
+print("Average steps:", total_steps / runs)
+
+
+success = 0
+total_conflicts = 0
+total_steps = 0
+
+for i in range(runs):
+
+    initial_state = [random.randint(0, num_slots-1) for _ in range(num_courses)]
+
+    final_state, final_score, steps = simulated_annealing(
+        initial_state, conflict_pairs, alpha=0.995)
+
+    total_conflicts += final_score
+    total_steps += steps
+
+    if final_score == 0:
+        success += 1
+
+print("\nSimulated Annealing (Slow Cooling)")
+print("Success rate:", success, "/", runs)
+print("Average final conflicts:", total_conflicts / runs)
+print("Average steps:", total_steps / runs)
