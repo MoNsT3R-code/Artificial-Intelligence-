@@ -29,26 +29,26 @@ The Artificial-Intelligence repository serves as a modular framework for testing
 ## 📦 System Architecture
 
 ```text
-┌──────────────────────────────────────────────────────────────┐
-│                    DATA INGESTION LAYER                      │
-├──────────────────────────────────────────────────────────────┤
-│               Raw Datasets / Image Matrices                  │
-│               (MNIST Digits, Regression Vectors)             │
-└──────────────────────────────┬───────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    DATA INGESTION LAYER                         │
+├─────────────────────────────────────────────────────────────────┤
+│               Raw Datasets / Image Matrices                     │
+│               (MNIST Digits, Regression Vectors)                │
+└──────────────────────────────┬──────────────────────────────────┘
                                ↓
-┌──────────────────────────────────────────────────────────────┐
-│                MODEL EVALUATION & TRAINING LAYER             │
-├────────────┬─────────────┬────────────┬─────────────┬────────┤
-│ Classifier │ Neural Net  │ Genetic    │ Regression  │ Loss   │
-│ Training   │ Hidden Layer│ Algorithm  │ Fit Engine  │ Weight │
-│ Engines    │ Weight Sync │ Mutators   │ Matrices    │ Tuning │
-└────────────┴─────────────┴────────────┴─────────────┴────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                MODEL EVALUATION & TRAINING LAYER                │
+├────────────┬─────────────┬────────────┬─────────────┬───────────┤
+│ Classifier │ Neural Net  │ Genetic    │ Regression  │ Loss      │
+│ Training   │ Hidden Layer│ Algorithm  │ Fit Engine  │ Weight    │
+│ Engines    │ Weight Sync │ Mutators   │ Matrices    │ Tuning    │
+└────────────┴─────────────┴────────────┴─────────────┴───────────┘
                                ↓
-┌──────────────────────────────────────────────────────────────┐
-│                   PERFORMANCE OUTPUT METRICS                 │
-├──────────────────────────────────────────────────────────────┤
+┌─────────────────────────────────────────────────────────────────┐
+│                   PERFORMANCE OUTPUT METRICS                    │
+├─────────────────────────────────────────────────────────────────┤
 │         Validation Matrix Profiles (Accuracy, Loss, Loss Curves)│
-└──────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────────┘
 
 ```
 
@@ -179,6 +179,3 @@ All input vectors undergo complete isolation checks. Normalization parameters us
 ## 📄 License & Terms
 
 This project is open-source. Feel free to copy, modify, and redistribute the artificial intelligence modules and laboratory scripts as required.
-```
-
-```
